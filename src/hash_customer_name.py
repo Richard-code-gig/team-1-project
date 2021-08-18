@@ -9,6 +9,6 @@ def hash_64(name):
 def hash_customer_name(df):
     col = 'customer_hash'
     for i in range(len(df[col])):
-        customer_name = df[col].iloc[i]
-        df[col].iloc[i] = hash_64(customer_name)
+        customer_name = df.loc[i,col]
+        df.loc[i,col] = hash_64(customer_name)
     return df
