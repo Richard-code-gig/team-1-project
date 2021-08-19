@@ -11,6 +11,7 @@ def test_hash_64():
 def test_hash_customer_name():
     df = hash_customer_name(mock_df)
     assert df['customer_hash'].iloc[0] == hash_64('Dave')
+    assert df['customer_hash'].iloc[1] == hash_64('Jane')
 
 def test_consistant_hash():
     df = hash_customer_name(mock_df)
