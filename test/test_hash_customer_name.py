@@ -1,5 +1,5 @@
 import pandas as pd
-from src.hash_customer_name import hash_customer_name, hash_64
+from src.data_sensitivity.hash_customer_name import hash_customer_name, hash_64
 
 mock_data = {'ID': [1,2,3], 'customer_hash': ['Dave', 'Jane','Dave']}
 

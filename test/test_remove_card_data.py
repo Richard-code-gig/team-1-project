@@ -1,5 +1,5 @@
 from unittest import mock
-from src.remove_card_data import remove_card_data
+from src.data_sensitivity.remove_card_data import remove_card_data
 from unittest.mock import Mock
 
 def test_column_removed():
