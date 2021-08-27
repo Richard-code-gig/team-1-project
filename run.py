@@ -11,7 +11,7 @@ def etl(file):
     card_removed_data = remove_card_data(raw_data)
 
     data = hash_customer_name(card_removed_data)
-    print(data)
-    connection, cur = raw.create_db_connection()
+
+    connection, cur = create_db_connection()
 
     raw.single_inserts(connection, data, cur)

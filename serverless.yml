@@ -14,6 +14,16 @@ provider:
     role:
       permissionsBoundary: arn:aws:iam::883232869702:policy/ScopePermissions
 
+package:
+  include: 
+    - src/**
+    - run.py
+  exclude:
+    - "*"
+    - "*/**" 
+  individually: true
+  excludeDevDependencies: false
+
 functions:
-  hello:
+  etl:
     handler: run.etl
