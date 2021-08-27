@@ -1,0 +1,19 @@
+service: team-1-etl
+
+frameworkVersion: '2'
+
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+  
+  region: eu-west-1
+  
+  iam:  
+    role:
+      permissionsBoundary: arn:aws:iam::883232869702:policy/ScopePermissions
+
+functions:
+  hello:
+    handler: run.etl
