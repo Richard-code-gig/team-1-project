@@ -17,7 +17,7 @@ provider:
 package:
   include: 
     - src/**
-    - run.py
+    - handler.py
   exclude:
     - "*"
     - "*/**" 
@@ -26,4 +26,4 @@ package:
 
 functions:
   etl:
-    handler: run.etl
+    handler: handler.handel
