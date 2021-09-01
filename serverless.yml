@@ -26,4 +26,12 @@ package:
 
 functions:
   etl:
-    handler: handler.handel
+    handler: handler.handel2
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    slim: true
+    layer: true
