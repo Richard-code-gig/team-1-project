@@ -2,17 +2,25 @@ service: team-1-etl
 
 frameworkVersion: '2'
 
-
 provider:
   name: aws
-  runtime: python3.9
+  runtime: python3.8
   lambdaHashingVersion: 20201221
-  
   region: eu-west-1
   
   iam:  
     role:
       permissionsBoundary: arn:aws:iam::883232869702:policy/ScopePermissions
+
+plugins:
+  - serverless-python-requirements
+  - serverless-iam-roles-per-function
+
+custom:
+  pythonRequirements:
+    slim: true
+    layer: true
+    dockerizePip: true
 
 package:
   include: 
@@ -30,12 +38,26 @@ functions:
     timeout: 300
     layers:
       - !Ref PythonRequirementsLambdaLayer
+        events:
+      - s3:
+          bucket: gen-x1-team-1-data-in
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - suffix: .csv
+    iamRoleStatements:
+      - Effect: 'Allow'
+        Action:
+          - s3:GetObject
+          - s3:ListBucket
+        Resource:
+          - arn:aws:s3:::my-bucket
+          - arn:aws:s3:::my-bucket/*
 
-plugins:
-  - serverless-python-requirements
-
-custom:
-  pythonRequirements:
-    slim: true
-    layer: true
-    dockerizePip: true
+resources:
+  Resources:
+    exampleBucket:
+      Type: 'AWS::S3::Bucket'
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: gen-x1-team-1-data-in
