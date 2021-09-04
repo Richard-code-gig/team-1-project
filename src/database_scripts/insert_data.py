@@ -1,141 +1,75 @@
-import psycopg2
-from psycopg2.extras import RealDictCursor
-import csv
-from io import BytesIO
+from psycopg2.extras import execute_values
+from src.database_scripts.create_connection import create_db_connection
 
+connection = create_db_connection()
 
-def create_db_connection(): #initiates connection
-    connection = psycopg2.connect(
-                    host="localhost", 
-                    user="root", 
-                    password="password",
-                    database="team_1_group_project"
-                    ) 
-    connection.autocommit = True
-    connection.cursor_factory = RealDictCursor
-    cur = connection.cursor()
-    return connection, cur
+def insert_customers(connection, data): 
+    try:
+        with connection.cursor() as cursor:
+            for d in data:
+                cursor.execute("""INSERT INTO customers (customer_hash) VALUES (%s) ON CONFLICT (customer_hash) DO NOTHING""", [d]) #We won't return any Pks
+    except Exception as e:
+        print(e)
+        pass
+    else:
+        connection.commit()
+        cursor.close()
 
-
-def single_inserts(connection, df, cur): #loads all data from df 
-    data = BytesIO()
-    df.index += 1
-    df.to_csv(data, sep='\t', header = True, index = True)
-    data.seek(0)
-    load_data = "Copy raw_table from STDOUT csv DELIMITER '\t' NULL '' ESCAPE '\\' HEADER"
-    cur.copy_expert(load_data, data)
-    connection.commit()
-    
-    
-def insert_products(connection, df, cur): #loads products table from df 
-    data = BytesIO()
-    df.index += 1
-    df.to_csv(data, sep='\t', header = True, index = True)
-    data.seek(0)
-    load_data = "Copy products from STDOUT csv DELIMITER '\t' NULL '' ESCAPE '\\' HEADER"
-    cur.copy_expert(load_data, data)
-    connection.commit()
+def insert_payments(connection, data): 
+    try:
+        with connection.cursor() as cursor:
+            for d in data:
+                cursor.execute("""INSERT INTO payments (payment_type) VALUES (%s) ON CONFLICT (payment_type) DO NOTHING""", [d])
+    except Exception as e:
+        print(e)
+        pass
+    else:
+        connection.commit()
+        cursor.close()
     
         
-def insert_customer(connection): #insert data to customer table
+def insert_locations(connection, data): 
     try:
         with connection.cursor() as cursor:
-            sql = """INSERT INTO customers (customer_hash) SELECT DISTINCT customer_hash from raw_table"""
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
+            for d in data:
+                cursor.execute("""INSERT INTO locations (location) VALUES (%s) ON CONFLICT (location) DO NOTHING""", [d])
     except Exception as e:
         print(e)
-        
-def insert_payment(connection): #insert data to payment table
-    try:
-        with connection.cursor() as cursor:
-            sql = """INSERT INTO payment (payment_id, payment_type) SELECT transaction_id, payment_type from raw_table"""
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
-    except Exception as e:
-        print(e) 
-        
-def insert_customer_order(connection, df, cur): #loads first_customer_table data from df
-    data = BytesIO()
-    df.to_csv(data, sep='\t', header = True, index = True)
-    data.seek(0)
-    load_data = "Copy first_customer_table from STDOUT csv DELIMITER '\t' NULL '' ESCAPE '\\' HEADER"
-    cur.copy_expert(load_data, data)
-    connection.commit()
-    
-def order_table_all(connection): #Not implemented yet
-    try:
-        with connection.cursor() as cursor:
-            sql = """CREATE VIEW new_table
-                AS
-                SELECT  t1.raw_id, t1.customer_hash, t1.orders, t1.price, t2.product_id
-                FROM customer_table t1
-                    JOIN products t2
-                        ON t1.orders = t2.product_name"""
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
-    except Exception as e:
-        print(e)
-    
-def insert_full_customer(connection): #adds product_id to first_customer_table using implicit join
-    try:
-        with connection.cursor() as cursor:
-            sql = """INSERT INTO customer_table (customer_hash, orders, price, product_id)
-                SELECT t1.customer_hash, t1.orders, t1.price, t2.product_id
-                FROM first_customer_table t1, products t2
-                WHERE t1.orders = t2.product_name"""
-                    
-                    #JOIN products t2
-                        #ON t1.orders = t2.product_name
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
-    except Exception as e:
-        print(e)
+        pass
+    else:
+        connection.commit()
+        cursor.close()
 
-def insert_orders(connection): #adds transaction_id to customer_table
+def insert_products(connection, data): 
     try:
         with connection.cursor() as cursor:
-            sql = """INSERT INTO orders (order_id, customer_hash, customer_id, order_time, total) 
-                SELECT t2.transaction_id, t1.customer_hash, t1.customer_id, t2.date, t2.total_price
-                FROM customers t1
-                JOIN raw_table t2
-                ON t1.customer_hash = t2.customer_hash"""
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
+            execute_values(cursor, """INSERT INTO products (product_name, product_price) VALUES %s ON CONFLICT (product_name) DO NOTHING""", data)
     except Exception as e:
         print(e)
-        
-def insert_order_product(connection): #adds transaction_id to customer_table
-    try:
-        with connection.cursor() as cursor:
-            sql = """INSERT INTO order_product (order_id, product_id, quantity) 
-                SELECT t1.order_id, t2.product_id, t3.quantity
-                FROM orders t1
-                JOIN customer_table t2
-                USING (customer_hash)
-                JOIN (SELECT customer_hash, COUNT (*) AS quantity FROM customer_table GROUP BY customer_hash) t3
-                USING (customer_hash)"""
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
-    except Exception as e:
-        print(e)
+        pass
+    else:
+        connection.commit()
+        cursor.close()
 
-def insert_updated_customer(connection): #adds transaction_id to customer_table
+def insert_orders(connection, data): 
     try:
         with connection.cursor() as cursor:
-            sql = """INSERT INTO new_customer_table (transaction_id, customer_hash, orders, price, product_id) 
-                SELECT t2.transaction_id, t1.customer_hash, t1.orders, t1.price, t1.product_id
-                FROM customer_table t1
-                JOIN raw_table t2
-                ON t1.customer_hash = t2.customer_hash"""
-            cursor.execute(sql)
-            connection.commit()
-            cursor.close()
+            execute_values(cursor, """INSERT INTO orders (customer_id, date, payment_id, location_id, amount_paid)
+            VALUES %s ON CONFLICT (date) DO NOTHING""", data) #Using date as a constraint here isn't the best option but suitable for our purpose
     except Exception as e:
         print(e)
+        pass
+    else:
+        connection.commit()
+        cursor.close()   
+        
+def insert_order_product(connection, data): 
+    try:
+        with connection.cursor() as cursor:
+            execute_values(cursor, """INSERT INTO order_products (order_id, product_id, quantity) VALUES %s ON CONFLICT (order_id) DO NOTHING""", data)
+    except Exception as e:
+        print(e)
+        pass
+    else:
+        connection.commit()
+        cursor.close()  
