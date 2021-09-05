@@ -49,7 +49,6 @@ def convert_df_to_dict(data): #Converts any DF to list of tuples needed by psyco
     return df
 
 def group_product(data):
-    pass
     df = data.groupby(['Orders', 'Price']).size().reset_index(name='total_quantity')
     df.columns = ['Orders', 'Price', 'total_quantity']
     df.drop(columns ='total_quantity', inplace=True)
