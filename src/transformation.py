@@ -15,7 +15,7 @@ def chunk(lst, n): #chunks a list in multiples of n integer
 def transform(data):
     df = data #This returned hashed name
     col = 'order'
-    df[col] = df[col].apply(lambda x: x.split(',')) #same as str.split(',')
+    df[col] = df[col].str.split(',')
     df[col] = df[col].apply(lambda x: chunk(x, 3))  #split in 3's
     return df
 
@@ -46,15 +46,6 @@ def convert_items_for_db(data, col): #converts from DF to python dict
 def convert_df_to_dict(data): #Converts any DF to list of tuples needed by psycopg2 execute_values
     arr = data.values
     df = [tuple(i) for i in arr]
-    return df
-    
-def group_order_product(data):
-    data['Price'] = data['Price'].apply(float)
-    dic = defaultdict(float)
-    col = data['customer_hash']
-    for i, v in enumerate(col):
-        dic[v] += data['Price'].iloc[i]
-    df = pd.DataFrame(dic.items(), columns=['customer_hash','total'])
     return df
 
 def group_product(data):

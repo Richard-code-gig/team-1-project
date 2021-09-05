@@ -12,7 +12,7 @@ def order_for_db_pay(payment_db, df_order_db_loc):
     return df_order_db_pay
 
 def ready_order_db(df_order_db_payment, convert_df_to_dic):
-    df_order_db_payment['date'] = df_order_db_payment['date'].apply(str)
+    df_order_db_payment['date'] = df_order_db_payment['date'].astype(str)
     df = df_order_db_payment[['customer_id', 'date', 'payment_id', 'location_id', 'total_price']]
     dic = convert_df_to_dic(df)
     return dic
