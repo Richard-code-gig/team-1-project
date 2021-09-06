@@ -2,7 +2,7 @@ import boto3
 from io import StringIO
 from src.read_csv_file import read_csv_file
 
-def handel(event):
+def handel(event, context):
     # gets key and bucket information from event
     key = event['Records'][0]['s3']['object']['key']
     bucket = event['Records'][0]['s3']['bucket']['name']
@@ -14,3 +14,4 @@ def handel(event):
     
     df = read_csv_file(StringIO(data))
     print(df)
+    
