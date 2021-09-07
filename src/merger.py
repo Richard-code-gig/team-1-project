@@ -18,7 +18,8 @@ def ready_order_db(df_order_db_payment, convert_df_to_dic):
     return dic
 
 def ord_prod_table(data6):
-    df_quantity = data6.groupby(['customer_hash']).size().reset_index(name='total_quantity')
+    data6['Orders'] = data6['Orders'].str.strip()
+    df_quantity = data6.groupby(['customer_hash', 'Orders'])['Orders'].size().reset_index(name='total_quantity')
     return df_quantity  
 
 def ready_ord_prod_db(product_db, data6, tab_order_id, ord_prod_tab, convert_df_to_dic):
@@ -29,5 +30,3 @@ def ready_ord_prod_db(product_db, data6, tab_order_id, ord_prod_tab, convert_df_
     df = df9[['order_id', 'product_id', 'total_quantity']]
     dic = convert_df_to_dic(df)
     return dic
-
-

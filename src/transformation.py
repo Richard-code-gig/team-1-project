@@ -49,8 +49,9 @@ def convert_df_to_dict(data): #Converts any DF to list of tuples needed by psyco
     df = [tuple(i) for i in arr]
     return df
 
-def group_product(data):
-    df = data.groupby(['Orders', 'Price']).size().reset_index(name='total_quantity')
+def group_product(data6):
+    data6['Orders'] = data6['Orders'].str.strip()
+    df = data6.groupby(['Orders', 'Price']).size().reset_index(name='total_quantity')
     df.columns = ['Orders', 'Price', 'total_quantity']
     df.drop(columns ='total_quantity', inplace=True)
     return df
@@ -112,5 +113,3 @@ def get_order_id_from_db(connection):
         return df_order
     except Exception as e:
         print(e)
-
-pd.set_option('max_colwidth', None)
