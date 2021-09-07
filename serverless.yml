@@ -17,6 +17,7 @@ custom:
   enterprise:
     collectLambdaLogs: false
 
+
 package:
   include: 
     - src/**
@@ -55,3 +56,4 @@ resources:
                     Service:
                       - lambda.amazonaws.com
                   Action: sts:AssumeRole
+    
