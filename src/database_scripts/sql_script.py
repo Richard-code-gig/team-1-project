@@ -86,7 +86,7 @@ def create_orders_table(connection):
                             REFERENCES customers(customer_id)
                                 ON DELETE CASCADE
                                 ON UPDATE CASCADE,
-                date VARCHAR(255) NOT NULL UNIQUE,
+                date VARCHAR(255) NOT NULL,
                 payment_id INT NOT NULL,
                 location_id INT NOT NULL,
                 amount_paid FLOAT NOT NULL
@@ -125,7 +125,7 @@ def create_order_product_table(connection):
 def alter_raw_table(connection): #handy to alter or drop tables. Only implemented when needed
     try:
         with connection.cursor() as cursor:
-            sql = """DROP TABLE customers"""
+            sql = """DROP TABLE customers, locations, payments, products, orders, order_products"""
             cursor.execute(sql)
             connection.commit()
             cursor.close()

@@ -5,7 +5,7 @@ import src.transformation as transform
 import src.hash_customer_name as name
 from src.read_csv_file import read_csv_file as reader
 from src.database_scripts.remove_card_data import remove_card_data as remover
-import run_merger as merger
+import merger
 import pandas as pd
 import numpy as np 
 from psycopg2.extensions import register_adapter, AsIs
@@ -22,7 +22,7 @@ register_adapter(np.float64, allow_numpy_float64)
 register_adapter(np.int64, allow_numpy_int64)
 
 
-# sql.create_database()
+sql.create_database()
 connection = create_db_connection()      
 
 sql.create_customer_table(connection)
@@ -32,7 +32,7 @@ sql.create_product_table(connection)
 sql.create_orders_table(connection)
 sql.create_order_product_table(connection)
 
-data = reader('isle-of-wight.csv')
+data = reader('new_file.csv')
 data2 = name.hash_customer_name(data) 
 data3 = remover(data2)
 data4 = transform.transform(data3)
@@ -42,7 +42,6 @@ data_for_db_loc = transform.convert_items_for_db(data4, 'location')
 data6 = transform.convert_to_DF(data5)
 data7 = transform.group_product(data6)
 data_prod_dict = transform.convert_df_to_dict(data7)
-
 product_db = transform.get_product_from_db(connection)
 product_db.rename(columns={'product_name':'Orders'})
 quantity = merger.ord_prod_table(data6) # gets customer_id, hash
@@ -57,7 +56,6 @@ df_order_db_pay = merger.order_for_db_pay(payment_db, df_order_db_loc)
 
 data_ord_dict = merger.ready_order_db(df_order_db_pay, transform.convert_df_to_dict) 
 data_ord_prod_dict = merger.ready_ord_prod_db(product_db, data6, tab_order_id, quantity, transform.convert_df_to_dict)
-
 insert.insert_customers(connection, data5)
 insert.insert_payments(connection, data_for_db_pay)
 insert.insert_locations(connection, data_for_db_loc)

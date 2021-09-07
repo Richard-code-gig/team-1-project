@@ -7,6 +7,5 @@ def hash_64(name):
 
 def hash_customer_name(df):
     col = 'customer_hash'
-    for i, _ in enumerate(df[col]):
-        df.loc[i, col] = hash_64(df.loc[i,col])
+    df[col] = df[col].apply(hash_64)
     return df

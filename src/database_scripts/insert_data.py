@@ -55,7 +55,7 @@ def insert_orders(connection, data):
     try:
         with connection.cursor() as cursor:
             execute_values(cursor, """INSERT INTO orders (customer_id, date, payment_id, location_id, amount_paid)
-            VALUES %s ON CONFLICT (date) DO NOTHING""", data) #Using date as a constraint here isn't the best option but suitable for our purpose
+            VALUES %s""", data) #Using date as a constraint here isn't the best option but suitable for our purpose
     except Exception as e:
         print(e)
         pass

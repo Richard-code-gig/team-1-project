@@ -9,6 +9,7 @@ the final format needed by the execute_values of psycopg2 in insert_data.py file
 
 connection = create_db_connection()
 
+
 def chunk(lst, n): #chunks a list in multiples of n integer
     return [lst[i:i + n] for i in range(0, len(lst), n)]
 
@@ -16,7 +17,7 @@ def transform(data):
     df = data #This returned hashed name
     col = 'order'
     df[col] = df[col].str.split(',')
-    df[col] = df[col].apply(lambda x: chunk(x, 3))  #split in 3's
+    df[col] = df[col].apply(lambda x: chunk(x, 1))  #split in 3's
     return df
 
 def convert_order_to_dict(data): #converts order DF to python dict
@@ -25,15 +26,15 @@ def convert_order_to_dict(data): #converts order DF to python dict
     col = 'order'
     for i, _ in enumerate(df[col]):
         dic[df['customer_hash'].iloc[i]] = df[col].iloc[i]
-    return dic
+    new_dic = defaultdict()
+    for k, v in dic.items():
+        new_dic[k] = [in_lst.rsplit('-', 1) for out_lst in v for in_lst in out_lst]
+    return new_dic
 
 def convert_to_DF(data): #converts back to DF
     dic = data
     dic_list = [(key, *i) for key,value in dic.items() for i in value] #converts dict to list of tuples
-    df = pd.DataFrame(dic_list, columns=['customer_hash','Size','Type','Price'])
-    orders = df[['Size', 'Type']].apply(lambda x: ' '.join(x), axis=1) #joins size with order type
-    df.insert(1, 'Orders', orders) #make price column last
-    df.drop(columns=['Size', 'Type'], inplace=True)
+    df = pd.DataFrame(dic_list, columns=['customer_hash','Orders','Price'])
     return df
     
 def convert_items_for_db(data, col): #converts from DF to python dict
@@ -111,3 +112,5 @@ def get_order_id_from_db(connection):
         return df_order
     except Exception as e:
         print(e)
+
+pd.set_option('max_colwidth', None)
