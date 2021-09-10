@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "aws-sso-credentials-getter": "^1.2.2",
+    "serverless": "^2.57.0"
+  },
+  "name": "team-1-project",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-python-requirements": "^5.1.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Generation-De-x-1/team-1-project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Generation-De-x-1/team-1-project/issues"
+  },
+  "homepage": "https://github.com/Generation-De-x-1/team-1-project#readme"
+}
