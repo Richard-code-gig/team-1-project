@@ -1,6 +1,6 @@
 from collections import defaultdict
 import pandas as pd
-from src.database_scripts.create_connection import create_db_connection
+from database_scripts.create_connection import create_db_connection
 
 """Functions here do moderate to intense transformation of data.
 They use raw data from dataframe or send SELECT queries to database for data needed.
@@ -31,6 +31,7 @@ def convert_order_to_dict(df): #converts order DF to python dict
 def convert_to_DF(dic): #converts back to DF
     dic_list = [(key, *i) for key,value in dic.items() for i in value] #converts dict to list of tuples
     df = pd.DataFrame(dic_list, columns=['customer_hash','Orders','Price'])
+    df['Orders'] = df['Orders'].str.strip()
     df['Price'] = df['Price'].astype('float16')
     return df
     

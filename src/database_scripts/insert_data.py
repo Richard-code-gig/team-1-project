@@ -1,5 +1,5 @@
 from psycopg2.extras import execute_values
-from src.database_scripts.create_connection import create_db_connection
+from database_scripts.create_connection import create_db_connection
 
 connection = create_db_connection()
 
