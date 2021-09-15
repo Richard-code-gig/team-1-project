@@ -19,7 +19,6 @@ def transform(df): #This returned hashed name
     df[col] = df[col].apply(lambda x: chunk(x, 1))  #split in 3's
     return df
 
-
 def convert_order_to_dict(df): #converts order DF to python dict
     dic = defaultdict()
     col = 'order'
@@ -59,59 +58,17 @@ def group_product(data6, connection, table, item):
     df.columns = ['Orders', 'Price', 'total_quantity']
     df.drop(columns ='total_quantity', inplace=True)
     df['Orders'] = df['Orders'].str.strip()
+    df = df.drop_duplicates()
     df_item['Orders'] = df_item['Orders'].str.strip()
     if df_item.empty:
         set_df = df
     else:
-        set_df = pd.concat([df,df_item]).drop_duplicates(subset=['Orders'],keep=False)
-    print(df_item)
+        df_both = df_item.merge(df.drop_duplicates(), on=['Orders', 'Price'], how='right', indicator=True)
+        set_df = df_both[df_both['_merge'] == 'right_only']
+        set_df = set_df.drop(columns=['_merge'])
+        
     return set_df
-
-def get_customer_from_db(connection):
-    try:
-        query_customer = pd.read_sql_query(
-        """select *
-        from customers""", connection)
-
-        df_customer = pd.DataFrame(query_customer, columns=['customer_id', 'customer_hash'])
-        return df_customer
-    except Exception as e:
-        print(e)
-
-def get_location_from_db(connection):
-    try:
-        query_location = pd.read_sql_query(
-        """select *
-        from locations""", connection)
-
-        df_location = pd.DataFrame(query_location, columns=['location_id', 'location'])
-        return df_location
-    except Exception as e:
-        print(e)
         
-def get_payment_from_db(connection):
-    try:
-        query_payment = pd.read_sql_query(
-        """select *
-        from payments""", connection)
-
-        df_payment = pd.DataFrame(query_payment, columns=['payment_id', 'payment_type'])
-        return df_payment
-    except Exception as e:
-        print(e)
-        
-def get_product_from_db(connection):
-    try:
-        query_product = pd.read_sql_query(
-        """select *
-        from products""", connection)
-
-        df_product = pd.DataFrame(query_product, columns=['product_id', 'product_name', 'product_price'])
-        df_product.rename(columns={'product_name':'Orders'}, inplace = True)
-        return df_product
-    except Exception as e:
-        print(e)
-
 def get_order_id_from_db(connection):
     try:
         query_order = pd.read_sql_query(

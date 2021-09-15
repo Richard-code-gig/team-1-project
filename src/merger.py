@@ -18,6 +18,7 @@ def ready_order_db(df_order_db_payment, convert_df_to_dic):
     return dic 
 
 def ready_ord_prod_db(product_db, data6, tab_order_id, convert_df_to_dic):
+    product_db.rename(columns={'product_name':'Orders'}, inplace = True)
     df7 = pd.merge(product_db, data6, on='Orders', how='right')
     df8 = pd.merge(tab_order_id, df7, on='customer_hash', how='right')
     df = df8.groupby(['order_id', 'product_id'])['product_id'].size().reset_index(name='quantity')
