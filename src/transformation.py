@@ -1,6 +1,7 @@
 from collections import defaultdict
 import pandas as pd
 from database_scripts.create_connection import create_db_connection
+from database_scripts.three_nf import item_from_db
 
 """Functions here do moderate to intense transformation of data.
 They use raw data from dataframe or send SELECT queries to database for data needed.
@@ -18,11 +19,16 @@ def transform(df): #This returned hashed name
     df[col] = df[col].apply(lambda x: chunk(x, 1))  #split in 3's
     return df
 
+
 def convert_order_to_dict(df): #converts order DF to python dict
     dic = defaultdict()
     col = 'order'
     for i, _ in enumerate(df[col]):
-        dic[df['customer_hash'].iloc[i]] = df[col].iloc[i]
+        try:
+            dic[df['customer_hash'].iloc[i]] += df[col].iloc[i]
+        except KeyError:
+            dic[df['customer_hash'].iloc[i]] = df[col].iloc[i]
+            
     new_dic = defaultdict()
     for k, v in dic.items():
         new_dic[k] = [in_lst.rsplit('-', 1) for out_lst in v for in_lst in out_lst]
@@ -32,7 +38,7 @@ def convert_to_DF(dic): #converts back to DF
     dic_list = [(key, *i) for key,value in dic.items() for i in value] #converts dict to list of tuples
     df = pd.DataFrame(dic_list, columns=['customer_hash','Orders','Price'])
     df['Orders'] = df['Orders'].str.strip()
-    df['Price'] = df['Price'].astype('float16')
+    df['Price'] = df['Price'].astype(float)
     return df
     
 def convert_3NF_items_for_db(df, col): #converts from DF to python list
@@ -46,13 +52,20 @@ def convert_df_to_dict(data): #Converts any DF to list of tuples needed by psyco
     df = [tuple(i) for i in arr]
     return df
 
-def group_product(data6):
-    data6['Orders'] = data6['Orders'].str.strip()
+def group_product(data6, connection, table, item):
     df = data6.groupby(['Orders', 'Price']).size().reset_index(name='total_quantity')
+    df_item = item_from_db(connection, table, item)
+    df_item.columns = ['Orders', 'Price']
     df.columns = ['Orders', 'Price', 'total_quantity']
     df.drop(columns ='total_quantity', inplace=True)
-    df = df.drop_duplicates()
-    return df
+    df['Orders'] = df['Orders'].str.strip()
+    df_item['Orders'] = df_item['Orders'].str.strip()
+    if df_item.empty:
+        set_df = df
+    else:
+        set_df = pd.concat([df,df_item]).drop_duplicates(subset=['Orders'],keep=False)
+    print(df_item)
+    return set_df
 
 def get_customer_from_db(connection):
     try:
