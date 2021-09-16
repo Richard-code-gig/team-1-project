@@ -73,6 +73,3 @@ def etl(filename):
     
     insert.insert_order_product(connection, data_ord_prod_dict)
     connection.close()
-   
-# etl(r'C:\Users\richa\DGProjtest\team-1-project\new_file3.csv')
-# etl(r'C:\Users\richa\DGProjtest\team-1-project\new_file4.csv')

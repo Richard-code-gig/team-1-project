@@ -1,14 +1,11 @@
 from collections import defaultdict
 import pandas as pd
-from database_scripts.create_connection import create_db_connection
 from database_scripts.three_nf import item_from_db
 
 """Functions here do moderate to intense transformation of data.
 They use raw data from dataframe or send SELECT queries to database for data needed.
 Data transitions between dataframe, dictionaries, and a list of tuples,
 the final format needed by the execute_values of psycopg2 in insert_data.py file"""
-
-connection = create_db_connection()
 
 def chunk(lst, n): #chunks a list in multiples of n integer
     return [lst[i:i + n] for i in range(0, len(lst), n)]
