@@ -131,4 +131,9 @@ dmypy.json
 #vscode
 .vscode
 
+#Node.js
 node_modules/
+
+#Serverless
+.Serverless
+package-lock.json
