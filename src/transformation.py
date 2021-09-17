@@ -57,12 +57,13 @@ def group_product(data6, connection, table, item):
     df['Orders'] = df['Orders'].str.strip()
     df = df.drop_duplicates()
     df_item['Orders'] = df_item['Orders'].str.strip()
-    if df_item.empty:
+    if df_item.dropna().empty:
         set_df = df
     else:
         df_both = df_item.merge(df.drop_duplicates(), on=['Orders', 'Price'], how='right', indicator=True)
         set_df = df_both[df_both['_merge'] == 'right_only']
         set_df = set_df.drop(columns=['_merge'])
+    return set_df
         
     return set_df
         
