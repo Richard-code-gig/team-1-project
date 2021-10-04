@@ -1,0 +1,79 @@
+LIMIT 5
+
+2(a).
+SELECT l.location, SUM(amount_paid) AS Amount_sold
+     FROM locations l
+     JOIN
+        orders o
+        ON l.location_id = o.location_id
+     GROUP BY l.location
+     ORDER BY Amount_sold DESC
+     LIMIT 5
+
+2(b).
+WITH loc_ord_table AS
+    (
+    SELECT l.location, order_id
+    FROM locations l
+    JOIN
+        orders o
+        ON l.location_id = o.location_id),
+    
+    prod_ordprod_table AS 
+    (
+    SELECT p.product_name, op.order_id, op.quantity
+    FROM products p
+    JOIN order_products op
+    ON p.product_id = op.product_id)
+SELECT lt.location, SUM(pt.quantity) as Quantity_sold
+FROM loc_ord_table lt
+    JOIN
+    prod_ordprod_table pt
+    ON lt.order_id = pt.order_id
+GROUP BY lt.location
+ORDER BY Quantity_sold DESC
+LIMIT 5
+
+3(a).
+SELECT date_trunc('day', to_timestamp(o.date, 'YYYY-MM-DD HH24:MI:SS')) AS Day, SUM(op.quantity) as Quantity_sold
+from orders o
+JOIN order_products op
+on o.order_id = op.order_id
+GROUP BY Day
+ORDER BY Quantity_sold
+
+3(b).
+SELECT date_trunc('week', to_timestamp(o.date, 'YYYY-MM-DD HH24:MI:SS')) AS Week, SUM(op.quantity) as Quantity_sold
+from orders o
+JOIN order_products op
+on o.order_id = op.order_id
+GROUP BY Week
+ORDER BY Quantity_sold
+
+3(c).
+SELECT date_trunc('month', to_timestamp(o.date, 'YYYY-MM-DD HH24:MI:SS')) AS Month, SUM(op.quantity) as Quantity_sold
+from orders o
+JOIN order_products op
+on o.order_id = op.order_id
+GROUP BY Month
+ORDER BY Quantity_sold
+
+4(a).
+SELECT c.customer_hash, SUM(o.amount_paid) AS Total_paid
+     FROM customers c
+     JOIN
+        orders o
+        ON c.customer_id = o.customer_id
+     GROUP BY c.customer_hash
+     ORDER BY Total_paid DESC
+     LIMIT 5
+
+4(b).
+WITH cus_ord_table AS
+    (
+     SELECT c.customer_hash, order_id
+     FROM customers c
+     JOIN
+        orders o
+        ON c.customer_id = o.customer_id),
+     
