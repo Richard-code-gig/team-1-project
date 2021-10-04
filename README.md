@@ -1,6 +1,19 @@
-## INTRODUCTION
+# Table of Contents
+1. [Introduction](#introduction)
+2. [Team-1-project: ETL-AWS](#team-1-project: etl-aws)  
+3. [Pipeline](#pipeline)  
+4. [Requirements](#requirements)  
+5. [Installation](#installation)  
+6. [Third-party libraries](#third-party libraries)  
+7. [Repository Structure and Run Instructions](#repository-structure-and-run-instructions)  
+8. [Addon](#addon)  
+9. [Development work](#development-work)  
+10. [Languages](#languages)  
+11. [Technologies](#technologies)  
 
-Team-1-project: ETL-AWS
+## Introduction
+
+# Team-1-project: ETL-AWS
 
 This is a project completed in 4 weeks during the Generation UK&I Data Engineering Bootcamp (London &Birmingham, 2021 Session). The goal of this project is to extract csv from an AWS S3 bucket. The csv files contain orders from different locations across the UK. The extracted files are transformed with Python using Pandas library and uploaded into a redshift database. 
 
@@ -57,12 +70,12 @@ Note that this project was developed using Postgres on local machine and Redshif
 ./serverless.yml/ contains instruction for AWS S3 and Lambda invocation as well as neccessary functions to include on AWS.  
 ./main.yml/ contains yml script to initiate AWS/GitHUB CI/CD action.  
 
-# Addon
+## Addon
 ./src.SQL_queries/ contains some sql queries that can be run on Redshift or Grafana to visualise trends.  
 
 git push -u origin <remote-branch> (This action should automatically download AWS SAM CLI on local machine and deploy to AWS).  
 
-# Development work
+## Development Work
 My team and I worked together. In the first week we used Trello to communicate the project set up, team structure and GiHub actions. The project flow through setting up Docker and necessary environments, extraction, transformation and loading test csv files to postgresql database in the first 2 weeks. While the final 2 weeks was used for unitesting, AWS service set up, writing yml configuration files, CI/CD, visualization, etc. This programme ingested data from AWS S3, cleaned and filtered with python script and aggregated product information in a cloud Amazon Redshift database.  
 
 ## Languages
