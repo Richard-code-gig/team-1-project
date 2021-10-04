@@ -1,10 +1,10 @@
 # Table of Contents
 1. [Introduction](#introduction)
-2. [Team-1-project: ETL-AWS](#team-1-project: etl-aws)  
+2. [Team-1-project: ETL-AWS](#team-1-project-etl-aws)  
 3. [Pipeline](#pipeline)  
 4. [Requirements](#requirements)  
 5. [Installation](#installation)  
-6. [Third-party libraries](#third-party libraries)  
+6. [Third-party libraries](#third-party-libraries)  
 7. [Repository Structure and Run Instructions](#repository-structure-and-run-instructions)  
 8. [Addon](#addon)  
 9. [Development work](#development-work)  
