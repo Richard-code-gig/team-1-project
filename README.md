@@ -31,6 +31,7 @@ Cleaned data is loaded to Redshift.
 Monitoring Lambda invocation on AWS CloudWatch & Grafana and visualising sales trends with Grafana.  
 
 ## Requirements
+This application can be run in a VS Code volume container or through normal setup (details later).
 AWS: Setup an AWS account.  
 S3: Set up EC2 instance.  
 S3: Set up a S3 bucket.  
@@ -49,6 +50,9 @@ CI/CD: To automatically deploy service to AWS when code is pushed to a GitHub br
 SQS: Set up AWS SQS.  
 
 ## Installation
+A .devcontainer is added to this application. Follow this guide to run this application in a VS Code container volume without the setup decribed above:
+https://www.youtube.com/watch?v=ruIoLtqIdNc
+Or you may follow the procedure below:
 Git clone https://github.com/Richard-code-gig/team-1-project to install the package folder.  
 Initialise a git folder in the project root directory.  
 Activate a virtual environment.  
