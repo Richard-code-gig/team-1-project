@@ -66,7 +66,7 @@ AWS SAM CLI
 
 ## Repository Structure and Run Instructions
 
-./.devcontainer/ contains scripts associated with building needed docker images and connections.  
+./.devcontainer/ contains scripts associated with building needed to run the application in VS Code container volume (The connection string will need to be changed from Redshift to Postgres).  
 ./test/ contains two scripts for testing two of the functions used in this project.  
 ./src/ contains connection and ETL scripts to launch make connections to specified database (Postgres during local development and Redshift on AWS) and run the etl process.  
 Note that this project was developed using Postgres on local machine and Redshift when deployed to AWS cloud.
